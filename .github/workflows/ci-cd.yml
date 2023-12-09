@@ -10,7 +10,7 @@ jobs:
               uses: actions/checkout@v3
             
             - name: docker image build
-              run: docker build -t bank-app:latest .
+              run: docker build .
             
             - name: docker login
               uses: docker/login-action@v3.0.0
@@ -18,4 +18,4 @@ jobs:
                     username: ${{ secrets.DOCKER_USERNAME }}
                     password: ${{ secrets.DOCKER_PASSWORD }}
             - name: pushing
-              run: docker push bank-app:latest
+              run: docker push ${{ secrets.DOCKER_PASSWORD }}/bank-app:latest
