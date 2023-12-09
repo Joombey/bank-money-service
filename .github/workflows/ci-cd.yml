@@ -18,4 +18,4 @@ jobs:
                     username: ${{ secrets.DOCKER_USERNAME }}
                     password: ${{ secrets.DOCKER_PASSWORD }}
             - name: pushing
-              run: docker push ${{ secrets.DOCKER_PASSWORD }}/bank-app:latest
+              run: docker push ${{ secrets.DOCKER_PASSWORD }}/bank:latest
