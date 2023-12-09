@@ -1,0 +1,60 @@
+services:
+  bank: 
+    image: bank-app
+    networks:
+      - bank-service
+      - microservice
+    depends_on:
+      bank-db: 
+        condition: service_healthy
+    ports:
+      - 8081:8080
+  bank-db:
+    image: mariadb:11.3.1-rc-jammy
+    environment:
+      - MARIADB_ROOT_PASSWORD=root
+      - MARIADB_USER=root
+      - MARIADB_DATABASE=maria_db
+    networks:
+      - bank-service
+    volumes:
+      - bank-db-volume:/var/lib/mysql
+    healthcheck:
+        test: [ "CMD", "healthcheck.sh", "--connect", "--innodb_initialized" ]
+        start_period: 10s
+        interval: 2s
+        retries: 10
+  profile:
+    image: profile-app
+    networks:
+      - profile-service
+      - microservice
+    ports:
+      - 8080:8080
+    depends_on:
+      bank: 
+        condition: service_started
+      profile-db:
+        condition: service_healthy
+  profile-db:
+    image: mariadb:11.3.1-rc-jammy
+    environment:
+      - MARIADB_ROOT_PASSWORD=root
+      - MARIADB_USER=root
+      - MARIADB_DATABASE=db
+    networks:
+      - profile-service
+    volumes:
+      - profile-db-volume:/var/lib/mysql
+    healthcheck:
+        test: [ "CMD", "healthcheck.sh", "--connect", "--innodb_initialized" ]
+        start_period: 10s
+        interval: 2s
+        retries: 10
+volumes:
+  bank-db-volume:
+  profile-db-volume:
+networks:
+  bank-service:
+  profile-service:
+  microservice:

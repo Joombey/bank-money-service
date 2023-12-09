@@ -2,26 +2,27 @@ package db
 
 import (
 	"database/sql"
-	"fmt"
 	"log"
 
 	cts "farukh.go/money/constants"
 	_ "github.com/go-sql-driver/mysql"
 )
 
-var db *sql.DB
+var localDb *sql.DB
 
 func init() {
-	db, _ = sql.Open("mysql", cts.MySQLConfig.FormatDSN())
+	db, err := sql.Open("mysql", cts.MySQLConfig.FormatDSN())
+	defer func() { localDb = db }()
+	if err != nil || db == nil {
+		log.Panicf("error opening db %s", err.Error())
+	}
 	stmt, err := db.Prepare(cts.DatabaseSchema)
 	if err != nil {
 		log.Panicf("error creation tables %s", err.Error())
 	}
 	stmt.Exec()
-
 	var version string
 	db.QueryRow("SELECT VERSION()").Scan(&version)
-	fmt.Println("Connected to:", version)
 }
 
 type MoneyRepositoryImpl struct {
@@ -29,7 +30,7 @@ type MoneyRepositoryImpl struct {
 }
 
 func (r MoneyRepositoryImpl) New() *MoneyRepositoryImpl {
-	return &MoneyRepositoryImpl{db: db}
+	return &MoneyRepositoryImpl{db: localDb}
 }
 
 func (r *MoneyRepositoryImpl) InsertCard(cardNumber int) (value int) {
@@ -53,7 +54,17 @@ func (r *MoneyRepositoryImpl) GetValueByCard(cardNumber int) (value float32) {
 	return value
 }
 
+func (r *MoneyRepositoryImpl) GetLatestCardNumber() (cardNumber int, err error) {
+	err = r.db.QueryRow(`SELECT card_number FROM moneys ORDER BY card_number DESC LIMIT 1`).Scan(&cardNumber)
+	return
+}
+
+func (r *MoneyRepositoryImpl) InsertMoney(cardNumber int, money float32) float32 {
+	value := r.GetValueByCard(cardNumber) + money
+	go r.updateCardNumber(cardNumber, value)
+	return value
+}
+
 func (r *MoneyRepositoryImpl) updateCardNumber(cardNumber int, value float32) {
 	r.db.Exec(`UPDATE moneys SET value = ? WHERE card_number = ?`, value, cardNumber)
 }
-

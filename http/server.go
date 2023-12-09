@@ -8,8 +8,9 @@ import (
 
 func Run() {
 	router := gin.Default()
-	router.GET(cts.TransferMoneyRoute, hr.TransferMoney)
+	router.POST(cts.TransferMoneyRoute, hr.TransferMoney)
+	router.POST(cts.LoadMoneyRoute, hr.LoadMoneyHandler)
+	router.GET(cts.GetValueRoute, hr.GetValueHandler)
 	router.GET(cts.CreateCardRoute, hr.CreateNewCardHandler)
-	router.POST(cts.GetValueRoute, hr.GetValueHandler)
-	router.Run("localhost:8081")
+	router.Run()
 }

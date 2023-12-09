@@ -1,25 +1,24 @@
 package di
 
 import (
-	"farukh.go/money/repos"
 	"farukh.go/money/db"
+	"farukh.go/money/repos"
 )
-
-func Init() {
-	(&container).new()
-}
 
 type BaseContainer struct {
 	MoneyRepo repos.MoneyRepository
 }
 
 func (c *BaseContainer) new() {
-	var moneyRepo = db.MoneyRepositoryImpl {}
+	var moneyRepo = db.MoneyRepositoryImpl{}
 	c.MoneyRepo = moneyRepo.New()
 }
 
-func GetContainer() BaseContainer {
-	return container
+func GetContainer() *BaseContainer {
+	if (container == BaseContainer{}) {
+		(&container).new()
+	}
+	return &container
 }
 
 var container = BaseContainer{}
