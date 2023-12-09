@@ -1,0 +1,21 @@
+name: ci/cd
+on: 
+    push:
+        branches: ["main"]
+jobs:
+    build-docker-image:
+        runs-on: ubuntu-latest
+        steps:
+            - name: pulling
+              uses: actions/checkout@v3
+            
+            - name: docker image build
+              run: docker build -t bank-app .
+            
+            - name: docker login
+              uses: docker/login-action@v3.0.0
+              with:
+                    username: ${{ secrets.DOCKER_USERNAME }}
+                    password: ${{ secrets.DOCKER_PASSWORD }}
+            - name: pushing
+              run: docker push ${{ secrets.DOCKER_USERNAME }}/bank-app:latest
