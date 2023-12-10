@@ -2,7 +2,7 @@ name: ci/cd
 on: 
   push:
       branches: ["main"]
-permissions: read-all
+permissions: write-all
 jobs:
   test:
     runs-on: ubuntu-latest
