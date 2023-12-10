@@ -6,7 +6,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     env:
-      -CONFIG_PATH: /root/apps/bank-money-service/configs/test-db.yaml
+      CONFIG_PATH: /root/apps/bank-money-service/configs/test-db.yaml
     steps:
       - name: fetch
         uses: actions/checkout@v3
