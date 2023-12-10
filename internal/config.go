@@ -21,7 +21,18 @@ var cfg Config
 
 func initConfig() Config {
 	configPath := os.Getenv("CONFIG_PATH")
-	
+
+	isTest := os.Getenv("TEST") == "true"
+
+	if isTest {
+		return Config{
+			Env: "test-db-repo",
+			DbConfig: DatabaseConfig {
+				Driver: "postgres",
+				Path: "postgresql://secUREusER:StrongEnoughPassword)@51.250.26.59:5432/postgres?sslmode=disable",
+			},
+		}
+	}
 	if configPath == "" {
 		panic("no config path specified")
 	}
