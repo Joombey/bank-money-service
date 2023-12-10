@@ -1,21 +1,38 @@
 name: ci/cd
 on: 
-    push:
-        branches: ["main"]
+  push:
+      branches: ["main"]
 jobs:
-    build-docker-image:
-        runs-on: ubuntu-latest
-        steps:
-            - name: pulling
-              uses: actions/checkout@v3
-            
-            - name: docker image build
-              run: docker build -t ${{ secrets.DOCKER_USERNAME }}/bank-app .
-            
-            - name: docker login
-              uses: docker/login-action@v3.0.0
-              with:
-                    username: ${{ secrets.DOCKER_USERNAME }}
-                    password: ${{ secrets.DOCKER_PASSWORD }}
-            - name: pushing
-              run: docker push ${{ secrets.DOCKER_USERNAME }}/bank-app:latest
+  test:
+    runs-on: ubuntu-latest
+    env:
+      -CONFIG_PATH: /root/apps/bank-money-service/configs/test-db.yaml
+    steps:
+      - name: fetch
+        uses: actions/checkout@v3
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: 'stable'
+      - name: Build app
+        run: |
+          go mod download
+          go test ./tests/ -v
+
+  build-docker-image:
+    runs-on: ubuntu-latest
+    needs: [test]
+    steps:
+      - name: pulling
+        uses: actions/checkout@v3
+      
+      - name: docker image build
+        run: docker build -t ${{ secrets.DOCKER_USERNAME }}/bank-app .
+      
+      - name: docker login
+        uses: docker/login-action@v3.0.0
+        with:
+              username: ${{ secrets.DOCKER_USERNAME }}
+              password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: pushing
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/bank-app:latest

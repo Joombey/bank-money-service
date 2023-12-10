@@ -25,8 +25,8 @@ const (
 
 const DatabaseSchema = `
 CREATE TABLE IF NOT EXISTS moneys(
-	id int primary key auto_increment,
-	card_number int not null,
-	value float default 0.0
+	id Serial primary key,
+	card_number integer not null,
+	value numeric default 0.0
 );
 `
