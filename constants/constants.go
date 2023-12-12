@@ -21,6 +21,7 @@ const (
 	GetValueRoute      string = "/get-card/:num" // GET with route argument :num
 	LoadMoneyRoute     string = "/load-money"    // POST
 	CardNumberStart    int    = 22_000_000
+	LocalConfigPath    string = "I:/dev/go-projects/bank-money-service/configs/local.yaml"
 )
 
 const DatabaseSchema = `

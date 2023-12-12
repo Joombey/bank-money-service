@@ -1,6 +1,7 @@
 services:
-  bank: 
+  bank:
     image: bank-app
+    container_name: bank
     networks:
       - bank-service
       - microservice
@@ -10,6 +11,7 @@ services:
     ports:
       - 8081:8080
   bank-db:
+    container_name: bank-db
     image: mariadb:11.3.1-rc-jammy
     environment:
       - MARIADB_ROOT_PASSWORD=root
@@ -20,38 +22,41 @@ services:
     volumes:
       - bank-db-volume:/var/lib/mysql
     healthcheck:
-        test: [ "CMD", "healthcheck.sh", "--connect", "--innodb_initialized" ]
-        start_period: 10s
-        interval: 2s
-        retries: 10
-  profile:
-    image: profile-app
-    networks:
-      - profile-service
-      - microservice
-    ports:
-      - 8080:8080
-    depends_on:
-      bank: 
-        condition: service_started
-      profile-db:
-        condition: service_healthy
-  profile-db:
-    image: mariadb:11.3.1-rc-jammy
-    environment:
-      - MARIADB_ROOT_PASSWORD=root
-      - MARIADB_USER=root
-      - MARIADB_DATABASE=db
-    networks:
-      - profile-service
-    volumes:
-      - profile-db-volume:/var/lib/mysql
-    healthcheck:
-        test: [ "CMD", "healthcheck.sh", "--connect", "--innodb_initialized" ]
-        start_period: 10s
-        interval: 2s
-        retries: 10
+      test: [ "CMD", "healthcheck.sh", "--connect", "--innodb_initialized" ]
+      start_period: 10s
+      interval: 2s
+      retries: 10
+
+  # profile:
+  #   image: profile-app
+  #   networks:
+  #     - profile-service
+  #     - microservice
+  #   ports:
+  #     - 8080:8080
+  #   depends_on:
+  #     bank: 
+  #       condition: service_started
+  #     profile-db:
+  #       condition: service_healthy
+  # profile-db:
+  #   image: mariadb:11.3.1-rc-jammy
+  #   environment:
+  #     - MARIADB_ROOT_PASSWORD=root
+  #     - MARIADB_USER=root
+  #     - MARIADB_DATABASE=db
+  #   networks:
+  #     - profile-service
+  #   volumes:
+  #     - profile-db-volume:/var/lib/mysql
+  #   healthcheck:
+  #       test: [ "CMD", "healthcheck.sh", "--connect", "--innodb_initialized" ]
+  #       start_period: 10s
+  #       interval: 2s
+  #       retries: 10
 volumes:
+  postgresql_data:
+    driver: local
   bank-db-volume:
   profile-db-volume:
 networks:
