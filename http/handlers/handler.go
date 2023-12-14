@@ -58,3 +58,9 @@ func LoadMoneyHandler(c *gin.Context) {
 	response := model.ValueResponse{CardNumber: request.CardNumber, Value: newValue}
 	c.IndentedJSON(http.StatusOK, response)
 }
+
+func DeleteCardHandler(c *gin.Context) {
+	param, _ := strconv.Atoi(c.Param("card"))
+	go repo.Delete(param)
+	c.IndentedJSON(http.StatusOK, "Deleted")
+}

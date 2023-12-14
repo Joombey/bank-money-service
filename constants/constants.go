@@ -17,6 +17,7 @@ const (
 	BaseBankApi        string = "http://" + RunAddress
 	RunAddress         string = "localhost:8081"
 	CreateCardRoute    string = "/new-card"      // GET
+	DeleteCardRoute    string = "/delete/:card"  // GET
 	TransferMoneyRoute string = "/transfer"      // POST
 	GetValueRoute      string = "/get-card/:num" // GET with route argument :num
 	LoadMoneyRoute     string = "/load-money"    // POST

@@ -81,3 +81,7 @@ func (r *MoneyRepositoryImpl) InsertMoney(cardNumber int, money float32) float32
 func (r *MoneyRepositoryImpl) updateCardNumber(cardNumber int, value float32) {
 	r.db.Exec(`UPDATE moneys SET value = ? WHERE card_number = ?`, value, cardNumber)
 }
+
+func (r *MoneyRepositoryImpl) Delete(cardNumber int) {
+	r.db.Exec(`DELETE FROM moneys WHERE card_number = ?`, cardNumber)
+}

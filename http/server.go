@@ -12,5 +12,6 @@ func Run() {
 	router.POST(cts.LoadMoneyRoute, hr.LoadMoneyHandler)
 	router.GET(cts.GetValueRoute, hr.GetValueHandler)
 	router.GET(cts.CreateCardRoute, hr.CreateNewCardHandler)
+	router.GET(cts.DeleteCardRoute, hr.DeleteCardHandler)
 	router.Run()
 }
