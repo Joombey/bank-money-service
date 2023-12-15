@@ -10,8 +10,7 @@ type BaseContainer struct {
 }
 
 func (c *BaseContainer) new() {
-	var moneyRepo = db.MoneyRepositoryImpl{}
-	c.MoneyRepo = moneyRepo.New()
+	c.MoneyRepo = db.MoneyRepositoryImpl{}.New()
 }
 
 func GetContainer() *BaseContainer {

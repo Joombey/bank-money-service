@@ -5,9 +5,9 @@ import "github.com/go-sql-driver/mysql"
 var MySQLConfig = mysql.Config{
 	User:                 "root",
 	Passwd:               "root",
-	DBName:               "maria_db",
+	DBName:               "db",
 	Net:                  "tcp",
-	Addr:                 "bank-db:3306",
+	Addr:                 "localhost:3306",
 	AllowNativePasswords: true,
 	CheckConnLiveness:    true,
 	MaxAllowedPacket:     64 << 20,

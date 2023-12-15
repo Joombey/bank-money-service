@@ -7,14 +7,15 @@ import (
 	cts "farukh.go/money/constants"
 	"farukh.go/money/di"
 	"farukh.go/money/model"
+	rp "farukh.go/money/repos"
 	"github.com/gin-gonic/gin"
 )
 
-var repo = di.GetContainer().MoneyRepo
+func repo() rp.MoneyRepository { return di.GetContainer().MoneyRepo }
 
 func GetValueHandler(c *gin.Context) {
 	cardNumber, _ := strconv.Atoi(c.Param("num"))
-	value := repo.GetValueByCard(cardNumber)
+	value := repo().GetValueByCard(cardNumber)
 	var response = model.ValueResponse{
 		CardNumber: cardNumber,
 		Value:      value,
@@ -25,7 +26,7 @@ func GetValueHandler(c *gin.Context) {
 func TransferMoney(c *gin.Context) {
 	var request model.TransferRequest
 	c.BindJSON(&request)
-	fromValue, toValue := repo.TransferMoney(request.From, request.To, request.Value)
+	fromValue, toValue := repo().TransferMoney(request.From, request.To, request.Value)
 	var response = [2]model.ValueResponse{
 		{
 			CardNumber: request.From,
@@ -41,26 +42,26 @@ func TransferMoney(c *gin.Context) {
 
 func CreateNewCardHandler(c *gin.Context) {
 	var newCard int
-	latestCard, err := repo.GetLatestCardNumber()
+	latestCard, err := repo().GetLatestCardNumber()
 	if err != nil {
 		newCard = cts.CardNumberStart
 	} else {
 		newCard = latestCard + 1
 	}
-	go repo.InsertCard(newCard)
+	go repo().InsertCard(newCard)
 	c.IndentedJSON(http.StatusOK, model.ValueResponse{CardNumber: newCard, Value: 0})
 }
 
 func LoadMoneyHandler(c *gin.Context) {
 	var request model.InsertRequest
 	c.BindJSON(&request)
-	newValue := repo.InsertMoney(request.CardNumber, request.Value)
+	newValue := repo().InsertMoney(request.CardNumber, request.Value)
 	response := model.ValueResponse{CardNumber: request.CardNumber, Value: newValue}
 	c.IndentedJSON(http.StatusOK, response)
 }
 
 func DeleteCardHandler(c *gin.Context) {
 	param, _ := strconv.Atoi(c.Param("card"))
-	go repo.Delete(param)
+	go repo().Delete(param)
 	c.IndentedJSON(http.StatusOK, "Deleted")
 }

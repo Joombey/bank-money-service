@@ -7,4 +7,5 @@ type MoneyRepository interface {
 	GetLatestCardNumber() (cardNumber int, err error)
 	InsertMoney(cardNumber int, money float32) float32
 	Delete(cardNumber int)
+	CheckNil()
 }

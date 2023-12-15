@@ -13,5 +13,5 @@ func Run() {
 	router.GET(cts.GetValueRoute, hr.GetValueHandler)
 	router.GET(cts.CreateCardRoute, hr.CreateNewCardHandler)
 	router.GET(cts.DeleteCardRoute, hr.DeleteCardHandler)
-	router.Run()
+	router.Run("0.0.0.0:8081")
 }

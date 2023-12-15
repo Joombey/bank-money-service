@@ -13,7 +13,10 @@ var localDb *sql.DB
 
 func Init() {
 	db, err := sql.Open("mysql", cts.MySQLConfig.FormatDSN())
-	defer func() { localDb = db }()
+	defer func() { 
+		localDb = db
+		println(localDb == nil, "123")
+		 }()
 	if err != nil || db == nil {
 		log.Panicf("error opening db %s", err.Error())
 	}
@@ -33,12 +36,19 @@ type MoneyRepositoryImpl struct {
 	db *sql.DB
 }
 
-func (r MoneyRepositoryImpl) New() *MoneyRepositoryImpl {
-	return &MoneyRepositoryImpl{db: localDb}
+func (r MoneyRepositoryImpl) New() *MoneyRepositoryImpl  {
+	repo := &MoneyRepositoryImpl{ db: localDb }
+	repo.CheckNil()
+	println(localDb == nil)
+	return repo
+}
+
+func (r MoneyRepositoryImpl) CheckNil() {
+	println(r.db == nil)
 }
 
 func (r *MoneyRepositoryImpl) InsertCard(cardNumber int) (value int) {
-	_, err := r.db.Exec("INSERT INTO moneys (card_number) values ?", cardNumber)
+	_, err := r.db.Exec("INSERT INTO moneys (card_number) values (?)", cardNumber)
 	if err != nil {
 		panic(err.Error())
 	}
@@ -68,7 +78,7 @@ func (r *MoneyRepositoryImpl) GetValueByCard(cardNumber int) (value float32) {
 }
 
 func (r *MoneyRepositoryImpl) GetLatestCardNumber() (cardNumber int, err error) {
-	err = r.db.QueryRow(`SELECT card_number FROM moneys ORDER BY card_number DESC LIMIT 1`).Scan(&cardNumber)
+	err = r.db.QueryRow(`SELECT card_number FROM moneys ORDER BY card_number DESC LIMIT 1`).Scan(cardNumber)
 	return
 }
 
