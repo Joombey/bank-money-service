@@ -5,9 +5,9 @@ import "github.com/go-sql-driver/mysql"
 var MySQLConfig = mysql.Config{
 	User:                 "root",
 	Passwd:               "root",
-	DBName:               "db",
+	DBName:               "maria_db",
 	Net:                  "tcp",
-	Addr:                 "localhost:3306",
+	Addr:                 "bank-db:3306",
 	AllowNativePasswords: true,
 	CheckConnLiveness:    true,
 	MaxAllowedPacket:     64 << 20,
@@ -15,7 +15,7 @@ var MySQLConfig = mysql.Config{
 
 const (
 	BaseBankApi        string = "http://" + RunAddress
-	RunAddress         string = "localhost:8081"
+	RunAddress         string = "localhost:8080"
 	CreateCardRoute    string = "/new-card"      // GET
 	DeleteCardRoute    string = "/delete/:card"  // GET
 	TransferMoneyRoute string = "/transfer"      // POST
@@ -27,8 +27,8 @@ const (
 
 const DatabaseSchema = `
 CREATE TABLE IF NOT EXISTS moneys(
-	id Serial primary key,
-	card_number integer not null,
+	id int primary key auto_increment,
+	card_number int not null,
 	value numeric default 0.0
 );
 `

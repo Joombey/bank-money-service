@@ -78,7 +78,7 @@ func (r *MoneyRepositoryImpl) GetValueByCard(cardNumber int) (value float32) {
 }
 
 func (r *MoneyRepositoryImpl) GetLatestCardNumber() (cardNumber int, err error) {
-	err = r.db.QueryRow(`SELECT card_number FROM moneys ORDER BY card_number DESC LIMIT 1`).Scan(cardNumber)
+	err = r.db.QueryRow(`SELECT card_number FROM moneys ORDER BY card_number DESC LIMIT 1`).Scan(&cardNumber)
 	return
 }
 

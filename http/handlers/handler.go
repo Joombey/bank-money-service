@@ -44,6 +44,7 @@ func CreateNewCardHandler(c *gin.Context) {
 	var newCard int
 	latestCard, err := repo().GetLatestCardNumber()
 	if err != nil {
+		println(err.Error())
 		newCard = cts.CardNumberStart
 	} else {
 		newCard = latestCard + 1
@@ -55,6 +56,7 @@ func CreateNewCardHandler(c *gin.Context) {
 func LoadMoneyHandler(c *gin.Context) {
 	var request model.InsertRequest
 	c.BindJSON(&request)
+	println(request.CardNumber)
 	newValue := repo().InsertMoney(request.CardNumber, request.Value)
 	response := model.ValueResponse{CardNumber: request.CardNumber, Value: newValue}
 	c.IndentedJSON(http.StatusOK, response)
